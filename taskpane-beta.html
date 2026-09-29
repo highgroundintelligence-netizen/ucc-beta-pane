@@ -438,6 +438,36 @@ class="add-btn text-xs px-3 py-1 bg-gray-700 hover:bg-amber-500 hover:text-black
 </div>
 <div id="offices-list" class="dynamic-list space-y-1.5 text-sm"></div>
 </div>
+
+<div class="bg-[#111827] rounded-2xl p-5 border border-gray-700">
+<div class="flex justify-between items-center mb-3">
+<h3 class="font-semibold text-sm flex items-center gap-x-2">
+<i class="fa-solid fa-layer-group text-blue-400"></i>
+<span>Sub-types</span>
+</h3>
+<button onclick="addDynamicItem('subtypes')"
+class="add-btn text-xs px-3 py-1 bg-gray-700 hover:bg-amber-500 hover:text-black rounded-xl flex items-center gap-x-1.5 font-medium">
+<i class="fa-solid fa-plus text-[10px]"></i> <span class="text-xs">Add</span>
+</button>
+</div>
+<p class="text-[10px] text-gray-500 mb-2">These fill the Sub-type list on Classify. Add and remove them here.</p>
+<div id="subtypes-list" class="dynamic-list space-y-1.5 text-sm"></div>
+</div>
+
+<div class="bg-[#111827] rounded-2xl p-5 border border-gray-700">
+<div class="flex justify-between items-center mb-3">
+<h3 class="font-semibold text-sm flex items-center gap-x-2">
+<i class="fa-solid fa-file-lines text-blue-400"></i>
+<span>Report types</span>
+</h3>
+<button onclick="addDynamicItem('report-types')"
+class="add-btn text-xs px-3 py-1 bg-gray-700 hover:bg-amber-500 hover:text-black rounded-xl flex items-center gap-x-1.5 font-medium">
+<i class="fa-solid fa-plus text-[10px]"></i> <span class="text-xs">Add</span>
+</button>
+</div>
+<p class="text-[10px] text-gray-500 mb-2">These fill the Report type list on Classify. Add and remove them here.</p>
+<div id="report-types-list" class="dynamic-list space-y-1.5 text-sm"></div>
+</div>
 </div>
 </div>
 
@@ -454,6 +484,7 @@ this split. -->
 <i class="fa-solid fa-tags text-amber-400"></i>
 <span>Classification Categories</span>
 </h3>
+<p class="text-xs text-amber-400">Caveats, special access, and sensitive programs are not part of this beta.</p>
 
 <!-- Top level Add Custom Category -->
 <button onclick="addCustomCategoryDefinition(true)"
@@ -480,11 +511,12 @@ this PR does not touch. -->
 <i class="fa-solid fa-file-shield text-amber-400"></i>
 <span>Handling Procedures</span>
 </h3>
+<p class="text-xs text-amber-400">Not part of this beta.</p>
 <p class="text-xs text-gray-400" style="max-width:260px">Content markings (e.g. PII, HIPAA) -- not entitlements, never checked by /vet.</p>
 
 <!-- Top level Add Handling Procedure -->
-<button onclick="addCustomCategoryDefinition(false)"
-class="text-xs px-4 py-2 bg-amber-600 hover:bg-amber-500 text-black rounded-2xl font-bold flex items-center gap-x-2">
+<button onclick="addCustomCategoryDefinition(false)" disabled
+class="text-xs px-4 py-2 bg-gray-700 text-gray-500 rounded-2xl font-bold flex items-center gap-x-2" style="cursor:not-allowed">
 <i class="fa-solid fa-plus"></i>
 <span>Add Category</span>
 </button>
@@ -591,7 +623,7 @@ onclick="event.stopPropagation()"></i>
 </div>
 </div>
 <div id="csv-import-panel" class="hidden mt-2 bg-[#1f2937] border border-gray-700 rounded-2xl p-4 text-sm">
-<p class="text-xs text-gray-400 mb-3">Upload a CSV or the Excel template. New people are added and existing ones are updated. You see a preview before anything is written. Clearance must match a level name, or leave it blank to use the lowest level.</p>
+<p class="text-xs text-gray-400 mb-3">Clearance must match a level you committed. Department must match a department you added. Section must match an office or section you added. A row that does not match is not imported.</p>
 <div class="flex" style="flex-wrap:wrap;gap:8px">
 <button onclick="importEmployeesFromCSV()"
 class="text-xs px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-semibold flex items-center gap-x-2">
@@ -820,8 +852,9 @@ class="text-xs px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-2xl
 <i class="fa-solid fa-robot text-amber-400"></i>
 <span>Automation, Rewards &amp; Handling</span>
 </h3>
+<p class="text-xs text-amber-400 mb-3">Not part of this beta.</p>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6" style="opacity:.45;pointer-events:none">
 <!-- Reward Streak Settings -->
 <div class="bg-[#1f2937] rounded-xl p-4 border border-gray-700">
 <div class="flex items-center justify-between mb-3">
@@ -952,8 +985,9 @@ placeholder="This message is addressed outside the organization..."></textarea>
 <i class="fa-solid fa-user-check text-emerald-400"></i>
 <span>Send exceptions (external only)</span>
 </h3>
-<button type="button" onclick="addSendExceptionAdmin()"
-class="add-btn text-xs px-3 py-1 bg-gray-700 hover:bg-amber-500 hover:text-black rounded-xl flex items-center gap-x-1.5 font-medium">
+<p class="text-xs text-amber-400">Not part of this beta.</p>
+<button type="button" disabled
+class="add-btn text-xs px-3 py-1 bg-gray-700 text-gray-500 rounded-xl flex items-center gap-x-1.5 font-medium" style="cursor:not-allowed">
 <i class="fa-solid fa-plus text-[10px]"></i> <span class="text-xs">Add</span>
 </button>
 </div>
@@ -1018,7 +1052,7 @@ class="form-input w-full px-4 py-[13px] rounded-2xl text-base font-medium">
 </div>
 <div>
 <label class="block text-xs font-bold tracking-[1px] text-gray-400 mb-1.5">CAVEAT</label>
-<select id="classify-caveat" onchange="updateLivePreview()" class="form-input w-full px-4 py-[13px] rounded-2xl">
+<select id="classify-caveat" disabled onchange="updateLivePreview()" class="form-input w-full px-4 py-[13px] rounded-2xl" style="opacity:.45">
 <option value="">None</option>
 </select>
 </div>
@@ -1027,17 +1061,18 @@ class="form-input w-full px-4 py-[13px] rounded-2xl text-base font-medium">
 <div class="grid grid-cols-2 gap-4">
 <div>
 <label class="block text-xs font-bold tracking-[1px] text-gray-400 mb-1.5">SPECIAL ACCESS</label>
-<select id="classify-special" onchange="updateLivePreview()" class="form-input w-full px-4 py-[13px] rounded-2xl">
+<select id="classify-special" disabled onchange="updateLivePreview()" class="form-input w-full px-4 py-[13px] rounded-2xl" style="opacity:.45">
 <option value="">None</option>
 </select>
 </div>
 <div>
 <label class="block text-xs font-bold tracking-[1px] text-gray-400 mb-1.5">SENSITIVE PROGRAM</label>
-<select id="classify-sensitive" onchange="updateLivePreview()" class="form-input w-full px-4 py-[13px] rounded-2xl">
+<select id="classify-sensitive" disabled onchange="updateLivePreview()" class="form-input w-full px-4 py-[13px] rounded-2xl" style="opacity:.45">
 <option value="">None</option>
 </select>
 </div>
 </div>
+<p class="text-[10px] text-amber-400">Caveats, special access, and sensitive programs are not part of this beta. Sub-type and report type are set in Admin Setup.</p>
 
 <!-- Dynamic Custom Categories (from Admin) -->
 <div id="custom-fields-section" class="pt-2 border-t border-gray-700">
@@ -1195,7 +1230,7 @@ UCC • Universal Communication Classifier
 <div id="feedback-modal" onclick="if (event.target.id === 'feedback-modal') hideFeedbackModal()" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
 <div onclick="event.stopImmediatePropagation()" class="bg-[#1f2937] w-full max-w-md mx-4 rounded-3xl p-6 border border-gray-700">
 <h3 class="font-semibold text-xl mb-1">Send feedback</h3>
-<p class="text-sm text-gray-400 mb-4">Help us improve the classifier. Your feedback goes directly to the development team.</p>
+<p class="text-sm text-gray-400 mb-4">This opens a message to ReubenBaker@highgroundintelligencesolutions.com.</p>
 
 <textarea id="feedback-text" rows="4" placeholder="The sub-type dropdown should show only relevant options based on primary classification..."
 class="form-input w-full px-4 py-3 rounded-2xl text-sm mb-4"></textarea>
@@ -1259,6 +1294,8 @@ classificationRanks: [],
 // Operation Sentinel) as if it were generic starter content. These stay as
 // the offline/demo-mode fallback when no backend is reachable.
 caveats: [],
+subtypes: [],
+reportTypes: [],
 specialAccess: [],
 sensitivePrograms: [],
 customCategoryDefinitions: [],
@@ -1332,6 +1369,8 @@ if (savedAdmin) {
 adminConfig = JSON.parse(savedAdmin);
 if (!adminConfig.customCategoryDefinitions) adminConfig.customCategoryDefinitions = [];
 if (!Array.isArray(adminConfig.internalDomains)) adminConfig.internalDomains = [];
+if (!Array.isArray(adminConfig.subtypes)) adminConfig.subtypes = [];
+if (!Array.isArray(adminConfig.reportTypes)) adminConfig.reportTypes = [];
 if (!adminConfig.externalAdvisoryText) adminConfig.externalAdvisoryText = DEFAULT_EXTERNAL_ADVISORY_TEXT;
 // bottomWarning replaces the old warningFooter field name (renamed for
 // symmetry with the new Top Warning). adminConfig is a full JSON.parse
@@ -2087,6 +2126,14 @@ case 'offices':
 targetArray = adminConfig.offices;
 label = "OFFICE / SECTION NAME";
 break;
+case 'subtypes':
+targetArray = adminConfig.subtypes;
+label = "SUB-TYPE";
+break;
+case 'report-types':
+targetArray = adminConfig.reportTypes;
+label = "REPORT TYPE";
+break;
 case 'custom-categories':
 targetArray = adminConfig.customCategories;
 break;
@@ -2155,6 +2202,8 @@ let targetArray;
 switch(type) {
 case 'departments': targetArray = adminConfig.departments; break;
 case 'offices': targetArray = adminConfig.offices; break;
+case 'subtypes': targetArray = adminConfig.subtypes; break;
+case 'report-types': targetArray = adminConfig.reportTypes; break;
 case 'custom-categories': targetArray = adminConfig.customCategories; break;
 case 'internal-domains': targetArray = adminConfig.internalDomains; break;
 }
@@ -2270,6 +2319,8 @@ renderDynamicList('departments-list', adminConfig.departments, 'departments');
 
 // Offices
 renderDynamicList('offices-list', adminConfig.offices, 'offices');
+renderDynamicList('subtypes-list', adminConfig.subtypes, 'subtypes');
+renderDynamicList('report-types-list', adminConfig.reportTypes, 'report-types');
 
 // Caveats
 renderDynamicList('caveats-list', adminConfig.caveats, 'caveats');
@@ -3608,7 +3659,7 @@ if (el) el.style.display = 'none';
 // matching the columns importEmployeesFromCSV() already maps below. A plain
 // client-side Blob download; no backend call needed.
 function downloadCsvTemplate() {
-const csvContent = 'name,email,employeeId,department,clearance\n';
+const csvContent = 'name,email,employeeId,department,section,clearance\n';
 const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
 const url = URL.createObjectURL(blob);
 const a = document.createElement('a');
@@ -3718,6 +3769,7 @@ const iName = col(['name', 'full name', 'fullname']);
 const iEmail = col(['email', 'e-mail', 'emailaddress']);
 const iEmpId = col(['employeeid', 'employee id', 'badge', 'badge id']);
 const iDept = col(['department', 'dept']);
+const iSection = col(['section', 'office', 'office/section']);
 const iClear = col(['clearance', 'level']);
 
 if (iName === -1 || iEmail === -1) {
@@ -3752,7 +3804,8 @@ name: cells[iName] || '',
 email: (cells[iEmail] || '').toLowerCase(),
 employeeId: iEmpId > -1 ? (cells[iEmpId] || '') : '',
 department: iDept > -1 ? (cells[iDept] || '') : '',
-clearance: (iClear > -1 ? (cells[iClear] || '') : '') || undefined
+section: iSection > -1 ? (cells[iSection] || '') : '',
+clearance: iClear > -1 ? (cells[iClear] || '') : ''
 });
 }
 
@@ -3762,26 +3815,45 @@ const rankRows = (adminConfig.classificationRanks && adminConfig.classificationR
 ? adminConfig.classificationRanks
 : (adminConfig.primaryClassifications || []);
 const known = new Set(rankRows.map((r) => String(r.token || r.name || '').trim().toUpperCase()).filter(Boolean));
-const lowest = rankRows.length ? String(rankRows[0].token || rankRows[0].name || '').trim() : '';
+const departments = (adminConfig.departments || []).map((d) => String(d).trim().toLowerCase()).filter(Boolean);
+const sections = (adminConfig.offices || []).map((d) => String(d).trim().toLowerCase()).filter(Boolean);
+if (!known.size) {
+showToast('Commit the level ladder before importing a roster.', 'warning');
+return;
+}
+if (!departments.length && !sections.length) {
+showToast('Add a department or a section in Admin Setup before importing a roster.', 'warning');
+return;
+}
 const invalid = [];
 const ready = [];
 rows.forEach((row) => {
 if (!row.name || !row.email) { invalid.push((row.email || row.name || '(blank row)') + ': name and email are required'); return; }
-const clearance = row.clearance || lowest;
-if (known.size && clearance && !known.has(clearance.toUpperCase())) {
-invalid.push(row.email + ': ' + clearance + ' is not a level you committed');
+const clearance = String(row.clearance || '').trim();
+if (!clearance || !known.has(clearance.toUpperCase())) {
+invalid.push(row.email + ': clearance must match a level you committed');
 return;
 }
-ready.push(Object.assign({}, row, { clearance: clearance || lowest }));
+const department = String(row.department || '').trim();
+const section = String(row.section || '').trim();
+if (departments.length && (!department || !departments.includes(department.toLowerCase()))) {
+invalid.push(row.email + ': department must match a department you added');
+return;
+}
+if (sections.length && (!section || !sections.includes(section.toLowerCase()))) {
+invalid.push(row.email + ': section must match an office or section you added');
+return;
+}
+ready.push(Object.assign({}, row, { clearance: clearance, department: department, section: section }));
 });
 const parts = [ready.length + ' to add', invalid.length + ' invalid'];
 let message = 'Reviewed ' + rows.length + ' row(s) from the file:\n\n' + parts.join('\n');
-if (invalid.length) message += '\n\nInvalid rows:\n' + invalid.slice(0, 5).join('\n');
+if (invalid.length) message += '\n\nNot imported:\n' + invalid.slice(0, 8).join('\n');
 if (!ready.length) {
-showToast('Nothing to import.' + (invalid.length ? ' ' + invalid.length + ' row(s) were invalid.' : ''), 'warning');
+showToast('Nothing to import. Clearance and section must match Admin Setup.', 'warning');
 return;
 }
-message += '\n\nA blank clearance is stored as the lowest level. Apply these changes?';
+message += '\n\nOnly rows that match a committed level and your department or section setup are imported. Apply these changes?';
 const proceed = await showConfirmModal({
 title: 'Confirm roster import',
 message: message,
@@ -3797,6 +3869,7 @@ if (existing) {
 existing.name = row.name;
 existing.employeeId = row.employeeId || existing.employeeId;
 existing.department = row.department || existing.department;
+existing.section = row.section || existing.section;
 existing.clearance = row.clearance;
 existing.active = true;
 } else {
@@ -3806,6 +3879,7 @@ name: row.name,
 email: row.email,
 employeeId: row.employeeId || '',
 department: row.department || '',
+section: row.section || '',
 clearance: row.clearance,
 auditId: '',
 active: true
@@ -4479,6 +4553,14 @@ null,
 'sensitive-programs'
 );
 grid.appendChild(sensitiveCol);
+[caveatsCol, specialCol, sensitiveCol].forEach((col) => {
+col.style.opacity = '0.45';
+col.style.pointerEvents = 'none';
+const note = document.createElement('div');
+note.className = 'text-[10px] text-amber-400 mt-2';
+note.textContent = 'Not in this beta.';
+col.appendChild(note);
+});
 
 // 5+ Custom Category Columns (dynamic) -- entitlement-flagged only. Uses
 // the ORIGINAL index into adminConfig.customCategoryDefinitions (not a
@@ -4533,7 +4615,7 @@ const empty = document.createElement('div');
 // instead.
 empty.className = 'text-xs text-gray-500 italic px-2 py-1';
 empty.style.gridColumn = '1 / -1';
-empty.textContent = 'No handling procedures yet. Click + Add Category above.';
+empty.textContent = 'Handling procedures are not part of this beta.';
 grid.appendChild(empty);
 }
 }
@@ -4734,18 +4816,26 @@ opt.textContent = item.name;
 primarySelect.appendChild(opt);
 });
 
-// Sub-type (simple list for starter - could be made contextual later)
 const subSelect = document.getElementById('classify-subtype');
 subSelect.innerHTML = '<option value="">None</option>';
-
-// Add some common sub-types
-const commonSubtypes = ["Analysis", "Brief", "Update", "Assessment", "Summary", "Raw Intel"];
-commonSubtypes.forEach(sub => {
+(adminConfig.subtypes || []).forEach(sub => {
 const opt = document.createElement('option');
 opt.value = sub;
 opt.textContent = sub;
 subSelect.appendChild(opt);
 });
+const reportSelect = document.getElementById('classify-report-type');
+if (reportSelect) {
+const current = reportSelect.value;
+reportSelect.innerHTML = '';
+(adminConfig.reportTypes || []).forEach(name => {
+const opt = document.createElement('option');
+opt.value = name;
+opt.textContent = name;
+if (name === current) opt.selected = true;
+reportSelect.appendChild(opt);
+});
+}
 
 // Caveat
 const caveatSelect = document.getElementById('classify-caveat');
@@ -5942,13 +6032,11 @@ if (!text) {
 showToast("Please enter your feedback.", "warning");
 return;
 }
-
+const subject = encodeURIComponent('UCC feedback');
+const body = encodeURIComponent(text);
+window.location.href = 'mailto:ReubenBaker@highgroundintelligencesolutions.com?subject=' + subject + '&body=' + body;
 hideFeedbackModal();
-
-// In real version this would POST to your backend or email
-showToast("Thank you. Feedback sent.", "success");
-
-// Clear for next time
+showToast('Opening a message to ReubenBaker@highgroundintelligencesolutions.com.', 'success');
 setTimeout(() => {
 document.getElementById('feedback-text').value = '';
 }, 1200);
@@ -7621,7 +7709,7 @@ resync: () => uccSyncFromBackend()
 </div>
 
 <p class="text-sm text-gray-300 mb-4">
-Enter the organization's <strong>admin password</strong> to access admin controls. <span id="admin-first-time-note">The first person to set this password becomes the administrator.</span>
+Enter the organization's <strong>admin password</strong> to access admin controls. <span id="admin-first-time-note">Any password works in this beta.</span>
 </p>
 
 <div class="mb-4">
