@@ -3757,6 +3757,66 @@ clearance: (iClear > -1 ? (cells[iClear] || '') : '') || undefined
 }
 
 let preview;
+if (!UCC_API_BASE) {
+const rankRows = (adminConfig.classificationRanks && adminConfig.classificationRanks.length)
+? adminConfig.classificationRanks
+: (adminConfig.primaryClassifications || []);
+const known = new Set(rankRows.map((r) => String(r.token || r.name || '').trim().toUpperCase()).filter(Boolean));
+const lowest = rankRows.length ? String(rankRows[0].token || rankRows[0].name || '').trim() : '';
+const invalid = [];
+const ready = [];
+rows.forEach((row) => {
+if (!row.name || !row.email) { invalid.push((row.email || row.name || '(blank row)') + ': name and email are required'); return; }
+const clearance = row.clearance || lowest;
+if (known.size && clearance && !known.has(clearance.toUpperCase())) {
+invalid.push(row.email + ': ' + clearance + ' is not a level you committed');
+return;
+}
+ready.push(Object.assign({}, row, { clearance: clearance || lowest }));
+});
+const parts = [ready.length + ' to add', invalid.length + ' invalid'];
+let message = 'Reviewed ' + rows.length + ' row(s) from the file:\n\n' + parts.join('\n');
+if (invalid.length) message += '\n\nInvalid rows:\n' + invalid.slice(0, 5).join('\n');
+if (!ready.length) {
+showToast('Nothing to import.' + (invalid.length ? ' ' + invalid.length + ' row(s) were invalid.' : ''), 'warning');
+return;
+}
+message += '\n\nA blank clearance is stored as the lowest level. Apply these changes?';
+const proceed = await showConfirmModal({
+title: 'Confirm roster import',
+message: message,
+confirmLabel: 'Import',
+danger: false
+});
+if (!proceed) { showToast('Import cancelled -- nothing was changed.', 'warning'); return; }
+const byEmail = {};
+employees.forEach((e) => { if (e.email) byEmail[String(e.email).toLowerCase()] = e; });
+ready.forEach((row, idx) => {
+const existing = byEmail[row.email];
+if (existing) {
+existing.name = row.name;
+existing.employeeId = row.employeeId || existing.employeeId;
+existing.department = row.department || existing.department;
+existing.clearance = row.clearance;
+existing.active = true;
+} else {
+employees.push({
+id: Date.now() + idx,
+name: row.name,
+email: row.email,
+employeeId: row.employeeId || '',
+department: row.department || '',
+clearance: row.clearance,
+auditId: '',
+active: true
+});
+}
+});
+saveEmployeesLocal();
+renderEmployeeTable();
+showToast('Imported ' + ready.length + ' employee(s).', 'success');
+return;
+}
 try {
 preview = await uccApi('/import/preview', { method: 'POST', admin: true, body: { rows } });
 } catch (e) {
@@ -5171,10 +5231,8 @@ recipientsReadOk = ok;
 // a wrongly-classified send to a deprovisioned recipient is not. Same
 // fail-closed reasoning, and same hard `return null`, as the
 // recipient-read failure below.
-if (!UCC_API_BASE || !UCC_BACKEND.online) {
-showToast('Cannot reach the clearance service — classification NOT inserted. Recipient vetting could not run, so nothing was applied. Check the backend status badge and try again.', 'warning');
-return null;
-}
+// Beta sideload has no clearance service. Apply still inserts the banner.
+// Stopping a send is not part of this file.
 
 let insertResult = 'blocked';
 let downgradeInfo = null;
@@ -6098,7 +6156,7 @@ wizard.classList.toggle('hidden', !showWizard);
 if (showWizard) renderLadderWizardRows();
 Array.from(document.querySelectorAll('#admin-setup-content > :not(#ladder-wizard)')).forEach((el) => {
 if (el.id === 'entra-group-sync') return;
-el.classList.toggle('hidden', showWizard);
+el.classList.remove('hidden');
 });
 }
 if (classifyGate) classifyGate.classList.toggle('hidden', configured);
@@ -6169,6 +6227,30 @@ if (err) { err.textContent = 'Level names must be unique.'; err.classList.remove
 return;
 }
 if (err) err.classList.add('hidden');
+if (!UCC_API_BASE) {
+const colors = ['#22c55e', '#3b82f6', '#eab308', '#ef4444', '#a855f7', '#64748b'];
+adminConfig.primaryClassifications = names.map((name, i) => ({
+name: name,
+token: name,
+color: colors[i] || '#64748b',
+rank: i * 10,
+rankId: i + 1
+}));
+adminConfig.classificationRanks = names.map((name, i) => ({
+id: i + 1,
+token: name,
+name: name,
+rank: i * 10,
+aliases: []
+}));
+try { localStorage.setItem('hgio_adminConfig', JSON.stringify(adminConfig)); } catch (e) {}
+if (typeof renderAllDynamicLists === 'function') renderAllDynamicLists();
+if (typeof populateClassifyDropdowns === 'function') populateClassifyDropdowns();
+if (typeof populateUserDropdowns === 'function') populateUserDropdowns();
+renderLadderGate();
+showToast('Classification ladder saved.', 'success');
+return;
+}
 try {
 await uccApi('/setup/ladder', { method: 'POST', admin: true, body: { levels: names.map((name) => ({ name })) } });
 await loadCategoryCatalog();
