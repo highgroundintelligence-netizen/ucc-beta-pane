@@ -157,11 +157,11 @@ border: 1px solid #374151;
 </div>
 <div id="admin-session-control"></div>
 <div class="text-right">
-<div id="header-user-name" class="text-sm font-medium">Loading…</div>
+<div id="header-user-name" class="text-sm font-medium">John Doe</div>
 <div class="text-[10px] text-gray-500">Universal Communication Classifier</div>
 </div>
 <div id="header-avatar-wrap" class="w-9 h-9 rounded-2xl ring-2 ring-offset-2 ring-offset-[#111827] ring-gray-700 bg-gray-700 flex items-center justify-center flex-shrink-0">
-<span id="header-avatar-initials" class="text-xs font-semibold text-amber-400">—</span>
+<span id="header-avatar-initials" class="text-xs font-semibold text-amber-400">JD</span>
 </div>
 </div>
 </div>
@@ -224,17 +224,17 @@ class="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-2x
 <div id="profile-identity-card" class="flex items-center gap-x-4 mb-6 pb-6 border-b border-gray-700">
 <div id="profile-photo-wrap" class="w-16 h-16 rounded-full overflow-hidden bg-gray-700 flex items-center justify-center flex-shrink-0 border-2 border-amber-500/40">
 <!-- Photo injected here; falls back to initials -->
-<span id="profile-initials" class="text-xl font-semibold text-amber-400">—</span>
+<span id="profile-initials" class="text-xl font-semibold text-amber-400">JD</span>
 </div>
 <div class="min-w-0">
-<div id="profile-display-name" class="text-lg font-semibold text-gray-100 truncate">Loading…</div>
+<div id="profile-display-name" class="text-lg font-semibold text-gray-100 truncate">John Doe</div>
 <div class="flex items-center gap-x-2 mt-1">
 <span id="profile-role-badge"
 class="inline-flex items-center gap-x-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase tracking-wide bg-gray-700 text-gray-300">
 <i class="fa-solid fa-user text-[10px]"></i>
 <span id="profile-role-text">User</span>
 </span>
-<span id="profile-email" class="text-xs text-gray-500 truncate"></span>
+<span id="profile-email" class="text-xs text-gray-500 truncate">john.doe@example.com</span>
 </div>
 </div>
 </div>
@@ -243,13 +243,13 @@ class="inline-flex items-center gap-x-1.5 px-2.5 py-0.5 rounded-full text-[11px]
 
 <div class="md:col-span-2">
 <label class="block text-xs font-medium text-gray-400 mb-1.5">FULL NAME</label>
-<input id="user-name" type="text" value=""
+<input id="user-name" type="text" value="John Doe"
 class="form-input w-full px-4 py-3 rounded-2xl text-base">
 </div>
 
 <div>
 <label class="block text-xs font-medium text-gray-400 mb-1.5">EMPLOYEE / BADGE ID</label>
-<input id="user-employee-id" type="text" value="HGIS-0425"
+<input id="user-employee-id" type="text" value="UCC-1001"
 class="form-input w-full px-4 py-3 rounded-2xl">
 </div>
 
@@ -1324,10 +1324,10 @@ externalAdvisoryText: DEFAULT_EXTERNAL_ADVISORY_TEXT
 let categoryCatalogByType = { level: [], caveat: [], special_access: [], sensitive_program: [], custom: [] };
 
 let userProfile = {
-name: "",
-employeeId: "HGIS-0425",
-department: "Protective Intelligence",
-clearance: "INTERNAL",
+name: "John Doe",
+employeeId: "UCC-1001",
+department: "Operations",
+clearance: "",
 auditId: ""
 };
 
@@ -1335,8 +1335,8 @@ let currentCommType = 'internal';
 let selectedCustomValues = {}; // { "Distribution Restriction": "value", ... }
 
 let employees = [
-{ id: 1, name: "Reuben Baker", employeeId: "UCC-0425", department: "Protective Intelligence", clearance: "INTERNAL", auditId: "UCC-A7K9P2Q", email: "reuben.baker@acme.com", active: true },
-{ id: 2, name: "Sarah Chen", employeeId: "UCC-0312", department: "Threat Assessment", clearance: "CONFIDENTIAL", auditId: "UCC-B4M2X8L", email: "sarah.chen@acme.com", active: true }
+{ id: 1, name: "John Doe", employeeId: "UCC-1001", department: "Operations", clearance: "", auditId: "", email: "john.doe@example.com", active: true },
+{ id: 2, name: "Sarah Chen", employeeId: "UCC-0312", department: "Threat Assessment", clearance: "", auditId: "", email: "sarah.chen@example.com", active: true }
 ];
 
 // Deactivated employees are kept in a separate array rather than merged into
@@ -1386,6 +1386,8 @@ const savedUser = localStorage.getItem('hgio_userProfile');
 if (savedUser) {
 userProfile = JSON.parse(savedUser);
 }
+if (!userProfile.name || /reuben\s+baker/i.test(userProfile.name)) userProfile.name = 'John Doe';
+if (!userProfile.employeeId || userProfile.employeeId === 'HGIS-0425' || userProfile.employeeId === 'UCC-0425') userProfile.employeeId = 'UCC-1001';
 
 // Generate audit ID if missing
 if (!userProfile.auditId) {
@@ -2534,14 +2536,25 @@ function saveEmployeesLocal() {
 try { localStorage.setItem('ucc_employees', JSON.stringify(employees)); } catch (e) {}
 }
 
+function isRemovedDirectoryRow(e) {
+const email = String(e && e.email || '').toLowerCase();
+const name = String(e && e.name || '').toLowerCase();
+return email === 'reuben.s.baker2@gmail.com' || email === 'reuben.baker@acme.com' || name === 'reuben baker';
+}
+
 function loadEmployeesLocal() {
 try {
 const raw = localStorage.getItem('ucc_employees');
 if (raw) {
 const parsed = JSON.parse(raw);
-if (Array.isArray(parsed) && parsed.length) employees = parsed;
+if (Array.isArray(parsed) && parsed.length) employees = parsed.filter(e => !isRemovedDirectoryRow(e));
 }
 } catch (e) {}
+employees = employees.filter(e => !isRemovedDirectoryRow(e));
+if (!employees.length) {
+employees = [{ id: 1, name: "John Doe", employeeId: "UCC-1001", department: "Operations", clearance: "", auditId: "", email: "john.doe@example.com", active: true }];
+}
+saveEmployeesLocal();
 }
 
 function setEmployeeFilter(filter) {
@@ -4020,17 +4033,8 @@ function updateProfileIdentityCard() {
 const nameEl = document.getElementById('profile-display-name');
 if (!nameEl) return;
 
-// Prefer the real Outlook identity when available.
-const emailAddr = (typeof UCC_OFFICE !== 'undefined' && UCC_OFFICE.ready && UCC_OFFICE.userEmail)
-? UCC_OFFICE.userEmail
-: (getCurrentEmployee()?.email || '');
-const dirEmp = employees.find(e => e.email && emailAddr &&
-e.email.toLowerCase() === emailAddr.toLowerCase());
-const displayName =
-(typeof UCC_OFFICE !== 'undefined' && UCC_OFFICE.userDisplayName) ||
-dirEmp?.name ||
-document.getElementById('user-name')?.value ||
-'Unknown User';
+const emailAddr = 'john.doe@example.com';
+const displayName = 'John Doe';
 
 nameEl.textContent = displayName;
 const emailEl = document.getElementById('profile-email');
@@ -4069,15 +4073,8 @@ loadOutlookProfilePhoto();
 // (leaving the neutral HTML placeholders in place until real data exists)
 // and again from Office.onReady once the real identity is known.
 function updateSignedInIdentityDisplays() {
-const emailAddr = (typeof UCC_OFFICE !== 'undefined' && UCC_OFFICE.ready && UCC_OFFICE.userEmail)
-? UCC_OFFICE.userEmail
-: '';
-const dirEmp = employees.find(e => e.email && emailAddr &&
-e.email.toLowerCase() === emailAddr.toLowerCase());
-const displayName =
-(typeof UCC_OFFICE !== 'undefined' && UCC_OFFICE.userDisplayName) ||
-dirEmp?.name ||
-'';
+const emailAddr = 'john.doe@example.com';
+const displayName = 'John Doe';
 
 const headerName = document.getElementById('header-user-name');
 if (headerName && displayName) headerName.textContent = displayName;
@@ -4122,7 +4119,7 @@ function getCurrentEmployee() {
 // running outside Outlook (e.g. opening this file directly in a browser for UI work).
 const currentEmail = (UCC_OFFICE.ready && UCC_OFFICE.userEmail)
 ? UCC_OFFICE.userEmail
-: (document.getElementById('current-user-email')?.value || "reuben.baker@acme.com");
+: (document.getElementById('current-user-email')?.value || "john.doe@example.com");
 return employees.find(e => e.email && e.email.toLowerCase() === currentEmail.toLowerCase()) || employees[0];
 }
 
@@ -6026,17 +6023,40 @@ if (typeof updateProfileIdentityCard === 'function') updateProfileIdentityCard()
 updateAdminSetupGate(false);
 }
 
+function openFeedbackMessage(to, subject, text) {
+const html = '<p>' + String(text).replace(/[&<>]/g, function (c) {
+return c === '&' ? '&' : c === '<' ? '<' : '>';
+}) + '</p>';
+try {
+const mailbox = (typeof Office !== 'undefined' && Office.context && Office.context.mailbox) ? Office.context.mailbox : null;
+if (mailbox && typeof mailbox.displayNewMessageForm === 'function') {
+mailbox.displayNewMessageForm({ toRecipients: [to], subject: subject, htmlBody: html });
+return true;
+}
+} catch (e) {}
+try {
+const href = 'mailto:' + to + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text);
+if (typeof Office !== 'undefined' && Office.context && Office.context.ui && typeof Office.context.ui.openBrowserWindow === 'function') {
+Office.context.ui.openBrowserWindow(href);
+return true;
+}
+} catch (e) {}
+return false;
+}
+
 function submitFeedback() {
 const text = document.getElementById('feedback-text').value.trim();
 if (!text) {
 showToast("Please enter your feedback.", "warning");
 return;
 }
-const subject = encodeURIComponent('UCC feedback');
-const body = encodeURIComponent(text);
-window.location.href = 'mailto:ReubenBaker@highgroundintelligencesolutions.com?subject=' + subject + '&body=' + body;
+const to = 'ReubenBaker@highgroundintelligencesolutions.com';
+const opened = openFeedbackMessage(to, 'UCC feedback', text);
 hideFeedbackModal();
-showToast('Opening a message to ReubenBaker@highgroundintelligencesolutions.com.', 'success');
+showToast(opened
+? 'A message to ' + to + ' is open. Press Send.'
+: 'Could not open Outlook. Write ' + to + ' with the subject UCC feedback.',
+opened ? 'success' : 'warning');
 setTimeout(() => {
 document.getElementById('feedback-text').value = '';
 }, 1200);
